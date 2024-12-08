@@ -146,11 +146,14 @@ def recipe_exists(db, recipe_id):
 # Used by: delete_recipe
 def del_recipe (db, recipe_id):
     db.execute('''DELETE FROM recipes WHERE RECIPE_ID = ?''', (recipe_id,))
+    db.commit()
 
 # Used by: delete_recipe
 def del_ingredients(db, recipe_id):
     db.execute('''DELETE FROM recipe_ingredients WHERE RECIPE_ID = ?''', (recipe_id,))
+    db.commit()
 
 # Used by: change_ingredient
 def del_ingredient(db, item_id):
     db.execute('''DELETE FROM recipe_ingredients WHERE ITEM_ID = ?''', (item_id,))
+    db.commit()
