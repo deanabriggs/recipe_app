@@ -21,7 +21,7 @@ def create_db():
                     (ITEM_ID  INTEGER PRIMARY KEY AUTOINCREMENT,
                     ITEM           TEXT    NOT NULL,
                     SPECS          TEXT,
-                    QUANTITY       INT     NOT NULL,
+                    QUANTITY       REAL     NOT NULL,
                     MEASURE_TYPE   TEXT    NOT NULL,
                     RECIPE_ID      INT     NOT NULL,
                     FOREIGN KEY(RECIPE_ID) REFERENCES recipes(RECIPE_ID)
@@ -32,7 +32,7 @@ def create_db():
     db.commit()
     db.close()
 
-#
+# Used in: main.py
 def sample_data(db):
     cursor = db.cursor()
     cursor.execute('''INSERT INTO recipes (TITLE, DESC, SERVINGS, MINUTES, DIRECTIONS) 
@@ -56,6 +56,17 @@ def has_recipes(db):
     count = cursor.fetchone()[0]
     return count > 0 # return True if there are records
 
+# Used by: edit_recipe
+def has_ingedients(db, recipe_id):
+    cursor = db.execute("SELECT COUNT(*) FROM recipes WHERE RECIPE_ID = ?", (recipe_id,))
+    count = cursor.fetchone()[0]
+    return count > 0 # return True if there are records
+
+# Used by: edit_recipe
+def edit_recipe_db(db, field, recipe_id, value):
+    query = f"UPDATE recipes SET {field} = ? WHERE RECIPE_ID = ?"
+    db.execute(query,(value, recipe_id))
+
 # Used by: heading
 def get_titles(db):
     cursor = db.execute("SELECT TITLE FROM recipes")
@@ -71,7 +82,7 @@ def get_recipe (db, recipe_id):
     cursor = db.execute('''SELECT * FROM recipes WHERE RECIPE_ID = ?''', (recipe_id,))
     return cursor.fetchone()
 
-# Used by: print_recipe
+# Used by: print_recipe, choose_ingredient
 def get_ingredients(db, recipe_id):
     cursor = db.execute('''SELECT * FROM recipe_ingredients WHERE RECIPE_ID = ?''', (recipe_id,))
     return cursor.fetchall()
@@ -107,3 +118,7 @@ def del_recipe (db, recipe_id):
 # Used by: delete_recipe
 def del_ingredients(db, recipe_id):
     db.execute('''DELETE FROM recipe_ingredients WHERE RECIPE_ID = ?''', (recipe_id,))
+
+# Used by: change_ingredient_prompt
+def del_ingredient(db, item_id):
+    db.execute('''DELETE FROM recipe_ingredients WHERE ITEM_ID = ?''', (item_id,))
