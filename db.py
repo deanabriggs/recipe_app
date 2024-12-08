@@ -24,8 +24,10 @@ def create_db():
                     QUANTITY       REAL     NOT NULL,
                     MEASURE_TYPE   TEXT    NOT NULL,
                     RECIPE_ID      INT     NOT NULL,
-                    FOREIGN KEY(RECIPE_ID) REFERENCES recipes(RECIPE_ID)
+                    FOREIGN KEY(RECIPE_ID) REFERENCES recipes(RECIPE_ID) ON DELETE CASCADE
                     );''')
+    
+    cursor.execute("PRAGMA foreign_keys = ON;")
     print("Recipe_ingredients table created successfully")
     
     # Commit and Close
@@ -119,6 +121,23 @@ def get_ingredients(db, recipe_id):
     cursor = db.execute('''SELECT * FROM recipe_ingredients WHERE RECIPE_ID = ?''', (recipe_id,))
     return cursor.fetchall()
 
+# Used by: print_recipe (revised method using JOIN)
+def get_recipe_with_ingredients(db, recipe_id):
+    query = '''
+        SELECT 
+            r.*,
+            ri.ITEM,
+            ri.SPECS,
+            ri.QUANTITY,
+            ri.MEASURE_TYPE
+        FROM recipes AS r
+        LEFT JOIN recipe_ingredients AS ri
+            ON r.RECIPE_ID = ri.RECIPE_ID
+        WHERE r.RECIPE_ID = ?
+        '''
+    cursor = db.execute(query, (recipe_id,))
+    return cursor.fetchall()
+
 # Used by: add_recipe
 def new_recipe(db, recipe):
     cursor = db.cursor()
@@ -148,7 +167,7 @@ def del_recipe (db, recipe_id):
     db.execute('''DELETE FROM recipes WHERE RECIPE_ID = ?''', (recipe_id,))
     db.commit()
 
-# Used by: delete_recipe
+# Used by: change_ingredient
 def del_ingredients(db, recipe_id):
     db.execute('''DELETE FROM recipe_ingredients WHERE RECIPE_ID = ?''', (recipe_id,))
     db.commit()

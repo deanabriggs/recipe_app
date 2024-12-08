@@ -76,9 +76,14 @@ def choose_ingredient(db, recipe_id):
     return ingredient_id                           # returns item_id
 
 # Displays recipe details with related ingredients
-def print_recipe(db, recipe_id): 
-    recipe = get_recipe(db, recipe_id)
+def print_recipe(db, recipe_id):
     clear() # Clear the Terminal
+    
+    #recipe = get_recipe(db, recipe_id) 
+    
+    # Update method of pulling recipe data
+    recipe_data = get_recipe_with_ingredients(db, recipe_id)
+    recipe = recipe_data[0] # uses the first tuple of the data to extract recipe info
 
     # Prints Recipe Info
     print(f'{recipe[1].upper()} RECIPE\n')
@@ -88,7 +93,10 @@ def print_recipe(db, recipe_id):
     print(f"Directions:   {recipe[5]}")
     
     # Retrieve Ingredients
-    ingredients = get_ingredients(db, recipe_id)    
+    #ingredients = get_ingredients(db, recipe_id) 
+    
+    # Update method of pulling related ingredients
+    ingredients = [row[6:] for row in recipe_data if row[6]] # narrows data to ingredient values that are not null
 
     # Print Ingredients
     print("Ingredients:")
@@ -96,7 +104,10 @@ def print_recipe(db, recipe_id):
         print("              No ingredients provided")
     else:
         for item in ingredients:
-            print(f"        {item[3]:>3} {item[4]:<6} {item[1]} {item[2]}")
+            #print(f"        {item[3]:>3} {item[4]:<6} {item[1]} {item[2]}")
+            
+            # revised for new method of pulling data
+            print(f"        {item[2]:>3} {item[3]:<6} {item[0]} {item[1]}")
 
 # Prompts to add a new recipe with ingredients then adds to database
 def add_recipe (db):
@@ -213,12 +224,9 @@ def delete_recipe(db):
         print_recipe(db, recipe_id)
         confirm = input("\nAre you sure you want to DELETE? (y/n) => ")
         if confirm.lower() == "y":
-
-            if ingredient_exists(db, recipe_id):            # Checks that there is a recipe with this recipe_id
-                del_ingredients(db, recipe_id)              # Deletes chosen ingredients based on choice
             
-            if recipe_exists(db, recipe_id):                # Checks that there are ingredients associated to this recipe_id
-                del_recipe(db, recipe_id)                   # Deletes chosen recipe based on choice
+            if recipe_exists(db, recipe_id):                # Checks that there is a recipe with this recipe_id
+                del_recipe(db, recipe_id)                   # Deletes chosen recipe based on choice (associate ingredients will be deleted automatically because Cascade Delete is on)
                 print("Recipe has been deleted.")
     else:
         clear()
