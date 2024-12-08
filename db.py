@@ -36,18 +36,50 @@ def create_db():
 def sample_data(db):
     cursor = db.cursor()
     cursor.execute('''INSERT INTO recipes (TITLE, DESC, SERVINGS, MINUTES, DIRECTIONS) 
-           VALUES 
-           ("French Apple Pie", "Granny Smith Apple Pie with Crumb Topping", 12, 90, 
-                "Preheat oven to 425 degrees. Peal and slice apples. Mix apples with sugar, cinnamon, and corn starch in a large bowl. 
-                Pour into pie crust. Cook for 40 minutes. Mix flour, brown sugar, and butter in a separate bowl. Remove pie from oven. 
-                Reduce oven to 400 degrees. Add crumb topping to pie. Return to oven and bake for an additional 15 minutes."),
-           ("Grandmas Rolls", "Sweet Dinner Rolls", 24, 180,
-                "In a small bowl, combine water, yeast, and a little sugar, then set aside. In a large bowl, microwave butter and milk for one minute. 
-                Then combine eggs, sugar, and salt to butter and milk. Add yeast and walk mixture and stir thoroughly. Slowly add in flour. Cover and let raise for an hour. 
-                Divide dough into three sections and roll out separately. Cut each section in roll into cressant. Set on baking sheet then cover let raise for an hour. 
-                Preheat oven to 350 degrees, then bake for 14 minutes.")
-           ''')
+        VALUES 
+        ("French Apple Pie", "Granny Smith Apple Pie with Crumb Topping", 12, 90, 
+            "Preheat oven to 425 degrees. Peal and slice apples. Mix apples with sugar, cinnamon, and corn starch in a large bowl. 
+              Pour into pie crust. Cook for 40 minutes. Mix flour, brown sugar, and butter in a separate bowl. Remove pie from oven. 
+              Reduce oven to 400 degrees. Add crumb topping to pie. Return to oven and bake for an additional 15 minutes.")''')
     db.commit()
+
+    recipe_id = cursor.lastrowid
+    ingredients = [
+        ("Apples", "Granny Smith, pealed and sliced", 8, "items", recipe_id ),
+        ("Sugar", "white", 1, "cup", recipe_id ),
+        ("Cinnamon", "ground", 1, "tsp", recipe_id),
+        ("Corn Starch", "", 2, "TBSP", recipe_id),      
+        ("Flour", "", 1, "cup", recipe_id),
+        ("Brown Sugar", "packed", .5, "cup", recipe_id),
+        ("Butter", "salted", .5, "cup", recipe_id)]
+    cursor.executemany('''INSERT INTO recipe_ingredients (ITEM, SPECS, QUANTITY, MEASURE_TYPE, RECIPE_ID)
+        VALUES (?,?,?,?,?)''', ingredients)
+    db.commit()
+
+    cursor.execute('''INSERT INTO recipes (TITLE, DESC, SERVINGS, MINUTES, DIRECTIONS) 
+        VALUES 
+        ("Grandmas Rolls", "Sweet Dinner Rolls", 24, 180,
+              "In a small bowl, combine water, yeast, and a little sugar, then set aside. In a large bowl, microwave butter and milk for one minute. 
+              Then combine eggs, sugar, and salt to butter and milk. Add yeast and walk mixture and stir thoroughly. Slowly add in flour. Cover and let raise for an hour. 
+              Divide dough into three sections and roll out separately. Cut each section in roll into cressant. Set on baking sheet then cover let raise for an hour. 
+              Preheat oven to 350 degrees, then bake for 14 minutes.")
+        ''')
+    db.commit()
+
+    recipe_id = cursor.lastrowid
+    ingredients = [
+        ("Water", "warm", .25, "cups", recipe_id ),
+        ("Yeast", "Dry", 1, "TBLS", recipe_id ),
+        ("Sugar", "white", 1, "tsp", recipe_id),
+        ("Sugar", "white", .5, "cup", recipe_id),
+        ("Butter", "salted", .5, "cup", recipe_id),
+        ("Eggs", "large", 3, "item", recipe_id),
+        ("Salt", "iodized", 1, "tsp", recipe_id),
+        ("Flour", "bread", 5.5, "cups", recipe_id)]
+    cursor.executemany('''INSERT INTO recipe_ingredients (ITEM, SPECS, QUANTITY, MEASURE_TYPE, RECIPE_ID)
+        VALUES (?,?,?,?,?)''', ingredients)
+    db.commit()
+
     cursor.close()
 
 # Used by: veiw_recipe, edit_recipe, delete_recipe
@@ -119,6 +151,6 @@ def del_recipe (db, recipe_id):
 def del_ingredients(db, recipe_id):
     db.execute('''DELETE FROM recipe_ingredients WHERE RECIPE_ID = ?''', (recipe_id,))
 
-# Used by: change_ingredient_prompt
+# Used by: change_ingredient
 def del_ingredient(db, item_id):
     db.execute('''DELETE FROM recipe_ingredients WHERE ITEM_ID = ?''', (item_id,))
