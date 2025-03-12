@@ -6,8 +6,6 @@ This is a recipe program designed for a user to store their favorite recipes and
 
 This software is self-contained allowing for it to be used on a signle device without a network connection.
 
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running, a walkthrough of the code, and a view of how created the Relational Database.}
-
 [Software Demo Video](https://youtu.be/UWvvncjU9e8)
 
 # Relational Database
