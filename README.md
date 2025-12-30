@@ -6,6 +6,8 @@ This is a recipe program designed for a user to store their favorite recipes and
 
 This software is self-contained allowing for it to be used on a signle device without a network connection.
 
+To start the project, ensure Python is installed on your system. Then enter "python main.py" in the terminal. Some environments will use "py main.py" instead.
+
 [Software Demo Video](https://youtu.be/UWvvncjU9e8)
 
 # Relational Database
