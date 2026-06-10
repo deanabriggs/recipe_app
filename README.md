@@ -1,58 +1,59 @@
-# Overview
+# Recipe App — Python + SQLite
 
-This software was designed to show how Python can be used to Create, Read, Update, and Delete information in a relational database (SQLite). It can create the database and auto-populate data.
+A command-line recipe manager that demonstrates full CRUD (Create, Read, Update, Delete) operations against a relational SQLite database. Store your favorite recipes and retrieve them whenever you need them.
 
-This is a recipe program designed for a user to store their favorite recipes and retrieve them when desired. When a user starts the program, the database is created if it doesn't arleady exist. If there aren't any existing recipes in the database, the user is asked if they want to use sample recipes. After they respond, existing recipes will be listed and menu options to view, add, edit, delete, or exit the program are provided. Each menu option will take the user through a series of prompts that interact with the database.
+## Overview
 
-This software is self-contained allowing for it to be used on a signle device without a network connection.
+This is a self-contained recipe program that lets a user store and retrieve their favorite recipes. On startup, the database is created automatically if it doesn't already exist. If there are no recipes yet, the user is offered a set of sample recipes to get started. From there, a menu lets the user view, add, edit, or delete recipes, with each option guiding the user through a series of prompts that read from and write to the database.
 
-To start the project, ensure Python is installed on your system. Then enter "python main.py" in the terminal. Some environments will use "py main.py" instead.
+Because it's fully self-contained, the app runs on a single device with no network connection required.
 
-[Software Demo Video](https://youtu.be/UWvvncjU9e8)
+## Getting Started
 
-# Relational Database
+Make sure Python is installed on your system, then run:
 
-This relational database has two tables: recipes and recipe_ingredients. Both tables have an auto-incrementing primary key. The recipe_ingredients table has a foreign key that connects it to the recipes table. A left join from the recipes table to the recipe_ingredients table allows for data to be retrieved from both tables in a single call to the database. The fields for each table are outlined below:
+```bash
+python main.py
+```
 
-### recipes
+Some environments use `py main.py` instead.
 
-- recipe_id (KEY)
-- title
-- desc
-- servings
-- minutes
-- directions
+## Database Design
 
-### recipe_ingredients
+The database has two tables connected by a foreign key. A LEFT JOIN from `recipes` to `recipe_ingredients` retrieves data from both tables in a single query.
 
-- item_id (KEY)
-- item
-- specs
-- quantity
-- measure_type
-- recipe_id (FOREIGN KEY to recipes)
+**recipes**
+- `recipe_id` (primary key)
+- `title`
+- `desc`
+- `servings`
+- `minutes`
+- `directions`
 
-# Development Environment
+**recipe_ingredients**
+- `item_id` (primary key)
+- `item`
+- `specs`
+- `quantity`
+- `measure_type`
+- `recipe_id` (foreign key → recipes)
+
+## Development Environment
 
 - Visual Studio Code (v1.95.3)
 - Python 3.13.0
-- SQLite3 (built-in library in Python)
+- SQLite3 (built-in Python library)
 
-# Useful Websites
+## Demo
 
-- [Python sqlite3](https://docs.python.org/3/library/sqlite3.html)
-- [DB-API 2.0 ingerface for SQLite databases](https://docs.python.org/3.8/library/sqlite3.html)
-- [SQL Tutorial](https://www.w3schools.com/sql/)
-- [Tutorialspoint](https://www.tutorialspoint.com/sqlite/sqlite_python.htm)
+<!-- TODO: add Software Demo Video link -->
 
-# Future Work
-
-Fixes and Improvements
+## Future Work
 
 - Error handling for unexpected values
 - Add options for canceling actions
-- Sorting recipes in Alpha order
-- Add "update" commands for ingredients, not just recipe table
-- Add feature to print to a PDF
-- Add feature to double or half recipes
-- Print recipes using JOIN
+- Sort recipes in alphabetical order
+- Add update commands for ingredients, not just the recipe table
+- Add a feature to print to PDF
+- Add a feature to double or halve recipes
+- Print recipes using a JOIN
